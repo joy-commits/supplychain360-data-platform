@@ -1,8 +1,6 @@
 # Ignore Google Sheets service account credentials
 *.json
 
-__pycache__/
-
 .env
 
 # Ignore local terraform directories
@@ -17,3 +15,14 @@ terraform.tfstate.backup
 
 # IAM user access keys
 .csv
+
+# Python virtual environment
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# Airflow specific
+airflow.cfg
+airflow.db
+*.log
