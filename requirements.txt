@@ -1,0 +1,9 @@
+pandas
+sqlalchemy
+psycopg2
+pyarrow
+fastparquet
+gspread
+oauth2client
+datetime
+gspread

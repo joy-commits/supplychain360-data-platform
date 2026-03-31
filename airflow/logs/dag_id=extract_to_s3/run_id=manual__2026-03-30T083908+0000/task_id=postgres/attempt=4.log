@@ -1,0 +1,5 @@
+{"timestamp":"2026-03-30T08:48:41.863030Z","level":"info","event":"DAG bundles loaded: dags-folder","logger":"airflow.dag_processing.bundles.manager.DagBundlesManager","filename":"manager.py","lineno":179}
+{"timestamp":"2026-03-30T08:48:41.864153Z","level":"info","event":"Filling up the DagBag from /opt/airflow/dags/extract.py","logger":"airflow.models.dagbag.DagBag","filename":"dagbag.py","lineno":593}
+{"timestamp":"2026-03-30T08:48:46.043973Z","level":"info","event":"Processing table: sales_2026_03_10","logger":"task.stdout"}
+{"timestamp":"2026-03-30T08:48:51.068809Z","level":"error","event":"Server indicated the task shouldn't be running anymore. Terminating process","detail":{"detail":{"reason":"not_found","message":"Task Instance not found"}},"logger":"task"}
+{"timestamp":"2026-03-30T08:48:56.090361Z","level":"error","event":"Task killed!","logger":"task"}

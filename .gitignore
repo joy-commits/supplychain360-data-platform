@@ -1,0 +1,19 @@
+# Ignore Google Sheets service account credentials
+*.json
+
+__pycache__/
+
+.env
+
+# Ignore local terraform directories
+.terraform/
+
+*.tfvars
+*.tfvars.json
+terraform.tfstate
+terraform.tfstate.backup
+
+.aws/
+
+# IAM user access keys
+.csv
