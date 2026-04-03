@@ -1,6 +1,5 @@
 # Ignore Google Sheets service account credentials
 *.json
-
 .env
 
 # Ignore local terraform directories
@@ -26,6 +25,10 @@ __pycache__/
 airflow.cfg
 airflow.db
 *.log
+airflow/logs/
+logs/
 
 # dbt profile
 profiles.yml
+
+.git

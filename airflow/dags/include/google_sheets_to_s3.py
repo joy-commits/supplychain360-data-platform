@@ -11,23 +11,17 @@ import json
 
 def google_sheets_extract():
     # Setup configurations
-    s3_hook = S3Hook(aws_conn_id='dest_bucket')
+    s3_hook = S3Hook(aws_conn_id='dest_conn')
     sheet_name = Variable.get("sheet_name")
     dest_bucket = Variable.get("dest_bucket")
     dest_key = "store_locations/stores.parquet"
 
-    with open("supplychain360-490812-1c1ba1e509e8.json") as f:
-        keyfile_dict = json.load(f)
-
-    creds = service_account.Credentials.from_service_account_info(
-        keyfile_dict,
-        scopes=[
-            "https://www.googleapis.com/auth/spreadsheets",
-            "https://www.googleapis.com/auth/drive"
-        ]
-    )
-
+    hook = GoogleBaseHook(gcp_conn_id='google_conn')
+    creds = hook.get_credentials()
+    
+    # Authorize gspread
     gc = gspread.authorize(creds)
+    
     
     # Fetch Data from Google Sheets
     print(f"Accessing {sheet_name}")

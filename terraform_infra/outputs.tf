@@ -13,3 +13,12 @@ output "snowflake_handshake_command" {
   value = "Run this in Snowflake: DESCRIBE STORAGE INTEGRATION ${snowflake_storage_integration.s3_integration.name};"
   description = "The command to get the ARNs needed to secure your AWS Role"
 }
+
+# the Snowflake credentials from Parameter Store
+output "aws_ssm_parameter" {
+  value = {
+    account  = aws_ssm_parameter.snowflake_account.name
+    username = aws_ssm_parameter.snowflake_user.name
+    password = aws_ssm_parameter.snowflake_password.name
+  }
+}

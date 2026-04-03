@@ -1,0 +1,41 @@
+version: 2
+
+models:
+  - name: dim_products
+    description: "Product table with supplier details"
+    columns:
+      - name: product_id
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_locations
+    description: "Combined table of all store and warehouse locations"
+    columns:
+      - name: location_id
+        tests:
+          - unique
+          - not_null
+
+  - name: fact_sales
+    description: "Sales transactions enriched with product and store details"
+    columns:
+      - name: transaction_id
+        tests:
+          - unique
+          - not_null
+
+  - name: fact_shipments
+    description: "Tracks supplier performance based on delivery performance metrics"
+    columns:
+      - name: shipment_id
+        tests:
+          - unique
+          - not_null
+
+  - name: fact_inventory
+    description: "Daily inventory snapshots with stock status"
+    columns:
+      - name: product_id
+        tests:
+          - not_null

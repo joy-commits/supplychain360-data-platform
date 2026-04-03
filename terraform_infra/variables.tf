@@ -51,17 +51,22 @@ variable "aws_account_id" {
 }
 
 variable "snowflake_storage_user_arn" {
-  type        = string
+  type = string
   description = "The STORAGE_AWS_IAM_USER_ARN from Snowflake DESCRIBE"
 }
 
 variable "snowflake_external_id" {
-  type        = string
+  type = string
   description = "The STORAGE_AWS_EXTERNAL_ID from Snowflake DESCRIBE"
 }
 
 variable "s3_folders" {
-  type        = list(string)
+  type = list(string)
   description = "List of S3 folders"
-  default     = ["inventory", "products", "shipments", "store_locations", "store_sales", "suppliers", "warehouses"]
+  default = ["inventory", "products", "shipments", "store_locations", "store_sales", "suppliers", "warehouses"]
+}
+
+variable "snowflake_account_id" {
+  type = string
+  description = "The account identifier to connect to third-party tools"
 }

@@ -23,49 +23,49 @@ resource "snowflake_warehouse" "supplychain_wh" {
 
 # The database
 resource "snowflake_database" "supplychain360_db" {
-  name    = "SUPPLYCHAIN360_DB"
+  name = "SUPPLYCHAIN360_DB"
   comment = "Main warehouse for Supplychain360 data platform"
 }
 
 # The Bronze schema
 resource "snowflake_schema" "bronze" {
-  name     = "BRONZE"
+  name = "BRONZE"
   database = snowflake_database.supplychain360_db.name
-  comment  = "Raw ingested data from S3 bucket"
+  comment = "Raw ingested data from S3 bucket"
 }
 
 # The Silver schema
 resource "snowflake_schema" "silver" {
-  name     = "SILVER"
+  name = "SILVER"
   database = snowflake_database.supplychain360_db.name
-  comment  = "Cleaned and filtered records"
+  comment = "Cleaned and filtered records"
 }
 
 # The Gold schema
 resource "snowflake_schema" "gold" {
-  name     = "GOLD"
+  name = "GOLD"
   database = snowflake_database.supplychain360_db.name
-  comment  = "Final tables for analysis"
+  comment = "Final tables for analysis"
 }
 
 # Read the parquet files
 resource "snowflake_file_format" "parquet_format" {
-  name        = "PARQUET_FORMAT"
-  database    = snowflake_database.supplychain360_db.name
-  schema      = snowflake_schema.bronze.name
+  name = "PARQUET_FORMAT"
+  database = snowflake_database.supplychain360_db.name
+  schema = snowflake_schema.bronze.name
   format_type = "PARQUET"
   compression = "SNAPPY"
-  comment     = "Standard format for reading Snappy-compressed Parquet files."
+  comment = "Standard format for reading Snappy-compressed Parquet files."
 }
 
 # Loops through the s3 folders and creates a secure 'Stage' for every folder listed in [var.supply_chain_folders]
 resource "snowflake_stage" "s3_stages" {
   for_each = toset(var.s3_folders)
 
-  name     = "${upper(each.key)}_STAGE"
-  url      = "s3://${var.centralized_bucket_name}/${each.key}/"
+  name = "${upper(each.key)}_STAGE"
+  url = "s3://${var.centralized_bucket_name}/${each.key}/"
   database = snowflake_database.supplychain360_db.name
-  schema   = snowflake_schema.bronze.name
+  schema = snowflake_schema.bronze.name
   
   # Uses the IAM Role handshake configured in the Storage Integration
   storage_integration = snowflake_storage_integration.s3_integration.name
@@ -78,4 +78,58 @@ resource "snowflake_stage" "s3_stages" {
     snowflake_schema.bronze,
     snowflake_file_format.parquet_format
   ]
+}
+
+# Create tables on Snowflake
+resource "snowflake_table" "bronze_tables" {
+  for_each = toset(var.s3_folders)
+
+  database = snowflake_database.supplychain360_db.name
+  schema = snowflake_schema.bronze.name
+  
+  # This creates tables
+  name = upper(each.key)
+
+  # A single VARIANT column to hold the raw Parquet data
+  column {
+    name = "RAW_DATA"
+    type = "VARIANT"
+  }
+
+  column {
+    name = "INSERT_TIMESTAMP"
+    type = "TIMESTAMP_NTZ"
+    default {
+      expression = "CURRENT_TIMESTAMP()"
+    }
+  }
+
+  lifecycle {
+    ignore_changes = [column]
+  }
+}
+
+
+# Snowflake Account ID
+resource "aws_ssm_parameter" "snowflake_account" {
+  name = "/supplychain/snowflake/account"
+  description = "Snowflake Account Identifier"
+  type = "String"
+  value = var.snowflake_account_id
+}
+
+# Snowflake Username
+resource "aws_ssm_parameter" "snowflake_user" {
+  name = "/supplychain/snowflake/username"
+  description = "Snowflake Service Account User"
+  type = "String"
+  value = var.snowflake_username
+}
+
+# Snowflake Password
+resource "aws_ssm_parameter" "snowflake_password" {
+  name = "/supplychain/snowflake/password"
+  description = "Snowflake Service Account Password"
+  type = "SecureString"
+  value = var.snowflake_password
 }

@@ -1,0 +1,14 @@
+version: 2
+
+sources:
+  - name: bronze
+    database: SUPPLYCHAIN360_DB
+    schema: BRONZE
+    tables:
+      - name: INVENTORY
+      - name: PRODUCTS
+      - name: SHIPMENTS
+      - name: STORE_LOCATIONS
+      - name: STORE_SALES
+      - name: SUPPLIERS
+      - name: WAREHOUSES

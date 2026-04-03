@@ -1,0 +1,70 @@
+name: Supplychain360-data-platform CI/CD
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+
+  ci:
+    name: CI — lint & test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install CI dependencies
+        run: |
+          pip install flake8 pytest PyYAML
+
+      - name: Lint — syntax errors and undefined names
+        run: |
+          flake8 airflow/ tests/ \
+            --count \
+            --select=E9,F63,F7,F82 \
+            --show-source \
+            --statistics
+
+      - name: Lint — style warnings
+        run: |
+          flake8 airflow/ tests/ \
+            --count \
+            --max-line-length=120 \
+            --statistics \
+            --exit-zero
+
+      - name: Run tests
+        run: pytest tests/ -v
+
+  cd:
+    name: CD — build & push image
+    runs-on: ubuntu-latest
+    needs: ci
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/supplychain360:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/supplychain360:${{ github.sha }}

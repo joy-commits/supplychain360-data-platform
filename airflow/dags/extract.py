@@ -1,8 +1,6 @@
 from airflow.sdk import DAG
 from pendulum import datetime, duration
 from airflow.providers.standard.operators.python import PythonOperator
-from airflow.providers.common.sql.operators.sql import SQLExecuteQueryOperator
-from airflow.providers.postgres.hooks.postgres import PostgresHook
 from include.postgres_to_s3 import postgres_extract
 from include.s3_to_s3 import s3_to_s3_extract
 from include.google_sheets_to_s3 import google_sheets_extract
@@ -12,7 +10,7 @@ from include.google_sheets_to_s3 import google_sheets_extract
 with DAG(
     dag_id="extract_to_s3",
     start_date=datetime(2026, 3, 20),
-    schedule='@daily',
+    schedule=None,
     catchup=False,
     default_args={
         "owner": "Ufuoma",
@@ -35,6 +33,5 @@ with DAG(
         task_id='postgres',
         python_callable=postgres_extract
     )
-
 
     extract_from_sheets >> extract_from_s3 >> extract_from_postgres

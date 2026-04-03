@@ -1,0 +1,20 @@
+name: 'dbt_transform'
+version: '1.0.0'
+config-version: 2
+
+profile: 'supplychain360_project' 
+
+model-paths: ["models"]
+seed-paths: ["seeds"]
+test-paths: ["tests"]
+analysis-paths: ["analyses"]
+snapshot-paths: ["snapshots"]
+
+models:
+  dbt_transform:
+    staging:
+      +schema: SILVER
+      +materialized: view
+    marts:
+      +schema: GOLD
+      +materialized: table
