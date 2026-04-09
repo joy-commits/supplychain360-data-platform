@@ -8,18 +8,18 @@ S3_FOLDERS = Variable.get("s3_folders", deserialize_json=True)
 # DAG Definition
 
 with DAG(
-    's3_to_snowflake_load',
-    default_args={
-        'owner': 'Ufuoma',
-        'retries': 3,
-        'retry_delay': timedelta(minutes=5),
-        },
+    dag_id="s3_to_snowflake_load",
     description='Orchestrate .parquet file ingestion from s3 to Snowflake Bronze Layer',
     schedule=None, 
     start_date=datetime(2026, 3, 30),
     catchup=False,
     max_active_runs=1,
-    template_searchpath=['/opt/airflow/dags/include/']
+    template_searchpath=['/opt/airflow/dags/include/'],
+    default_args={
+        'owner': 'Ufuoma',
+        'retries': 3,
+        'retry_delay': timedelta(minutes=5),
+        }    
 ) as dag:
 
     # Loop through folders to create dynamic tasks
