@@ -10,18 +10,18 @@ EXEC = "/home/airflow/.local/bin/dbt"
 
 # DAG definition
 with DAG(
-    'dbt_transform',
-    default_args={
-        'owner': 'Ufuoma',
-        'retries': 3,
-        'retry_delay': timedelta(minutes=5),
-        },
+    dag_id="dbt_transform",
     description='Transform data in Snowflake Bronze Layer using dbt',
     schedule=None, 
     start_date=datetime(2026, 3, 31),
     catchup=False,
     max_active_runs=1,
-    template_searchpath=['/opt/airflow/dags/dbt_transform/']
+    template_searchpath=['/opt/airflow/dags/dbt_transform/'],
+    default_args={
+        'owner': 'Ufuoma',
+        'retries': 3,
+        'retry_delay': timedelta(minutes=5),
+        }
 ) as dag:
 
     dbt_profile = PythonOperator(
