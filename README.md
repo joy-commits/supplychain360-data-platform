@@ -33,12 +33,13 @@ The platform has a modern data stack architecture:
 3.  **Raw layer**: All ingested data is converted to parquet format and stored in S3 (data lake).
 4.  **Warehouse & modelling**: Data is loaded into Snowflake and modelled (using dbt) into fact and dimension tables (Star schema).
 5.  **Orchestration**: Airflow coordinates the end-to-end workflow.
+![Full pipeline run](extract_load_transform_pipeline-graph.png)
 6.  **CI/CD**: GitHub Actions automates testing and Docker image deployment.
 
 ##  Technology Stack
 | Component | Technology | Description |
 | :--- | :--- | :--- |
-| Cloud storage | AWS S3 | Used for the raw parquet layer (landin zone for all sources) and Terraform state |
+| Cloud storage | AWS S3 | Used for the raw parquet layer (landing zone for all sources) and Terraform state |
 | Infrastructure | Terraform | Manages cloud resources including S3 buckets, Snowflake objects, and IAM roles |
 | Data warehouse | Snowflake | Used as the primary Data Warehouse |
 | Orchestration | Apache Airflow | Manages pipelines and task dependencies |
