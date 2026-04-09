@@ -3,7 +3,7 @@ from airflow.operators.trigger_dagrun import TriggerDagRunOperator
 from datetime import datetime
 
 with DAG(
-    'extract_load_transform_pipeline',
+    dag_id="extract_load_transform_pipeline",
     start_date=datetime(2026, 3, 30),
     schedule='@daily',
     catchup=False,
